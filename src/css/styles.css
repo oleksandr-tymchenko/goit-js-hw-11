@@ -38,6 +38,7 @@ h1, ul, p{
 .gallery {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
 }
 

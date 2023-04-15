@@ -17,24 +17,34 @@ const queryParams = {
     image_type: 'photo',
     orientation: 'horizontal',
     per_page: 40,
-    safesearch: true
+    safesearch: true,
+    page: 1
 }
+
+let query = '';
 
 // refs.input.addEventListener('input', onInputValue);
 
 refs.form.addEventListener('submit', onSubmitSearch);
-
+refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick)
 
 
 function onSubmitSearch(e) {
     e.preventDefault();
-    let query = e.currentTarget.elements.searchQuery.value;
+    
+    resetSearch();
+    query = e.currentTarget.elements.searchQuery.value;
     
     fetchSearch(query);
-    // const galery = new SimpleLightbox('.gallery a');
-    // console.log(galery);
+   
 }
 
+function onLoadMoreBtnClick() {
+
+    queryParams.page += 1;
+    fetchSearch(query);
+    console.log(queryParams.page)
+}
 
 const fetchSearch = query => {
     queryParams.q = query;
@@ -78,10 +88,15 @@ const renderGAlary = galary => {
     ).join('');
     console.log(markUp);
 
-    refs.gallery.innerHTML = markUp;
+    refs.gallery.insertAdjacentHTML('beforeend', markUp);
 
 }
 
 const activateSimpleLightBox = () => {
     const galery = new SimpleLightbox('.gallery a');
+}
+
+const resetSearch = () => {
+refs.gallery.innerHTML = '';
+    queryParams.page = 1;
 }
