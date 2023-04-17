@@ -58,7 +58,9 @@ h1, ul, p{
   text-align: center;
 }
 
-
+.load-more.is-hidden {
+display: none;
+}
 
 /* .item-title {
   font-style: normal;

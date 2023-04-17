@@ -1,64 +1,56 @@
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+
 import './css/styles.css';
 import getRefs from './get-refs';
+import FetchApiServise from './api-servises';
 
-import { fetchData } from './api-servises';
-const axios = require('axios').default;
-
+const fetchApiServise = new FetchApiServise();
 const refs = getRefs();
 
-const API_KEY = '34527862-993120beb94eb9a2ced5c8bcb';
-const BASE_URL = 'https://pixabay.com/api/';
-
-const queryParams = {
-    q: '',
-    image_type: 'photo',
-    orientation: 'horizontal',
-    per_page: 40,
-    safesearch: true,
-    page: 1
-}
-
-let query = '';
-
-// refs.input.addEventListener('input', onInputValue);
 
 refs.form.addEventListener('submit', onSubmitSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick)
 
+btnIsHidden();
 
 function onSubmitSearch(e) {
     e.preventDefault();
+
+    clearContainer();
+    fetchApiServise.query = e.currentTarget.elements.searchQuery.value;
+    if (fetchApiServise.query === '') {
+        return Notiflix.Notify.failure('You should enter a valid request');
+    }
+
+    fetchApiServise.resetPage();
+    fetchApiServise.fetchSearch()
+        .then(hits => {
+            if (hits.length === 0) {
+                clearTimeout(timerId)
+                return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+            }
+            renderGAlary(hits);
+        })
+        .then(activateSimpleLightBox)
+        
+    let timerId = setTimeout(btnIsActive, 500);
     
-    resetSearch();
-    query = e.currentTarget.elements.searchQuery.value;
     
-    fetchSearch(query);
-   
 }
+
 
 function onLoadMoreBtnClick() {
-
-    queryParams.page += 1;
-    fetchSearch(query);
-    console.log(queryParams.page)
+    btnIsHidden();
+    fetchApiServise.fetchSearch()
+        .then(hits => renderGAlary(hits))
+        .then(activateSimpleLightBox);
+    
+    setTimeout(btnIsActive, 1000);
 }
 
-const fetchSearch = query => {
-    queryParams.q = query;
-    console.log(queryParams);
-    axios.get(BASE_URL, {
-    params: {
-        ...queryParams,
-        key: API_KEY,
-    },
-})
-        .then(response => { renderGAlary(response.data.hits) })
-        .then(activateSimpleLightBox)
-    .catch(error => {console.log(error)})
-}
+
 
 const renderGAlary = galary => {
     const markUp = galary.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) =>
@@ -96,7 +88,21 @@ const activateSimpleLightBox = () => {
     const galery = new SimpleLightbox('.gallery a');
 }
 
-const resetSearch = () => {
+const clearContainer = () => {
 refs.gallery.innerHTML = '';
-    queryParams.page = 1;
+}
+
+
+
+// button
+function btnIsHidden() {
+    refs.loadMoreBtn.classList.add('is-hidden');
+};
+
+function btnIsActive() {
+    refs.loadMoreBtn.classList.remove('is-hidden');
+}
+
+function endOfSearchResoult() {
+    
 }
