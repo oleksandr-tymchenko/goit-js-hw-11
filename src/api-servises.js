@@ -16,12 +16,13 @@ const queryParams = {
 export default class FetchApiServise {
     constructor() { 
         this.searchQuery = '';
-        this.page = 1;
+        this.page = 0;
+        this.per_page = queryParams.per_page;
     }
 
 
     fetchSearch() {
-        console.log("до запиту", this);
+        // console.log("до запиту", this);
         queryParams.page = this.page;
         queryParams.q = this.searchQuery;
 
@@ -36,8 +37,8 @@ export default class FetchApiServise {
             //     throw new Error(response.status);
             // }
                     this.incrementPage();
-            
-                    return response.data.hits;
+                    console.log(response.data)
+                    return response.data;
                 })
                 .catch(error => {console.log(error)})
     };

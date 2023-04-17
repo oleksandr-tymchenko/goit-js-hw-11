@@ -26,31 +26,54 @@ function onSubmitSearch(e) {
 
     fetchApiServise.resetPage();
     fetchApiServise.fetchSearch()
-        .then(hits => {
+        .then(({hits, totalHits}) => {
             if (hits.length === 0) {
                 clearTimeout(timerId)
                 return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
             }
-            renderGAlary(hits);
+            let totalPages = Math.ceil(totalHits / fetchApiServise.per_page);
+                let currentPage = fetchApiServise.page-1;
+                console.log(totalPages, currentPage);
+            if (totalPages === currentPage) {
+                endOfSearchResoult();
+                btnIsHidden();
+            } else {
+                
+                renderGAlary(hits); 
+            }
+            
         })
         .then(activateSimpleLightBox)
         
-    let timerId = setTimeout(btnIsActive, 500);
+    let timerId = setTimeout(btnIsActive, 1000);
     
     
 }
 
 
 function onLoadMoreBtnClick() {
-    btnIsHidden();
-    fetchApiServise.fetchSearch()
-        .then(hits => renderGAlary(hits))
-        .then(activateSimpleLightBox);
     
-    setTimeout(btnIsActive, 1000);
-}
+        fetchApiServise.fetchSearch()
+            .then(({totalHits, hits}) => {
+                let totalPages = Math.ceil(totalHits / fetchApiServise.per_page);
+                let currentPage = fetchApiServise.page-1;
+                console.log(totalPages, currentPage);
 
-
+                renderGAlary(hits);
+                let timerId = setTimeout(btnIsActive, 1000);
+                if (totalPages === currentPage) {
+                    endOfSearchResult();
+                    clearTimeout(timerId)
+                    btnIsHidden();
+                    
+                } 
+                
+            })
+            .then(activateSimpleLightBox);
+    
+            
+} 
+    
 
 const renderGAlary = galary => {
     const markUp = galary.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) =>
@@ -78,7 +101,7 @@ const renderGAlary = galary => {
             </div>
         </div>`
     ).join('');
-    console.log(markUp);
+    // console.log(markUp);
 
     refs.gallery.insertAdjacentHTML('beforeend', markUp);
 
@@ -103,6 +126,7 @@ function btnIsActive() {
     refs.loadMoreBtn.classList.remove('is-hidden');
 }
 
-function endOfSearchResoult() {
+function endOfSearchResult() {
     
+    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
 }
