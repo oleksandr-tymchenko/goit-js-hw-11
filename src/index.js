@@ -19,60 +19,37 @@ function onSubmitSearch(e) {
     e.preventDefault();
 
     clearContainer();
-    fetchApiServise.query = e.currentTarget.elements.searchQuery.value;
+    fetchApiServise.query = e.currentTarget.elements.searchQuery.value.trim();
     if (fetchApiServise.query === '') {
         return Notiflix.Notify.failure('You should enter a valid request');
     }
 
     fetchApiServise.resetPage();
     fetchApiServise.fetchSearch()
-        .then(({hits, totalHits}) => {
-            if (hits.length === 0) {
-                clearTimeout(timerId)
-                return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
-            }
-            let totalPages = Math.ceil(totalHits / fetchApiServise.per_page);
-                let currentPage = fetchApiServise.page-1;
-                console.log(totalPages, currentPage);
-            if (totalPages === currentPage) {
-                endOfSearchResoult();
-                btnIsHidden();
-            } else {
-                
-                renderGAlary(hits); 
-            }
-            
+        .then(({ hits, totalHits }) => {
+            // let timerId = setTimeout(btnIsActive, 1000);
+            checkingEmptyArr(hits, timerId);
+            messageWithTotalHits(totalHits);
+            renderGAlary(hits);
+            checkingAmountOfPages(totalHits);
+
         })
-        .then(activateSimpleLightBox)
+        .then(activateSimpleLightBox);
         
-    let timerId = setTimeout(btnIsActive, 1000);
-    
-    
-}
+    let timerId = setTimeout(btnIsActive, 1000);  
+};
 
 
 function onLoadMoreBtnClick() {
     
         fetchApiServise.fetchSearch()
-            .then(({totalHits, hits}) => {
-                let totalPages = Math.ceil(totalHits / fetchApiServise.per_page);
-                let currentPage = fetchApiServise.page-1;
-                console.log(totalPages, currentPage);
-
+            .then(({ totalHits, hits }) => {
                 renderGAlary(hits);
-                let timerId = setTimeout(btnIsActive, 1000);
-                if (totalPages === currentPage) {
-                    endOfSearchResult();
-                    clearTimeout(timerId)
-                    btnIsHidden();
-                    
-                } 
-                
+                checkingAmountOfPages(totalHits);
             })
-            .then(activateSimpleLightBox);
-    
-            
-} 
+            .then(activateSimpleLightBox)
+            .then(smoothScroll);        
+};
     
 
 const renderGAlary = galary => {
@@ -115,7 +92,16 @@ const clearContainer = () => {
 refs.gallery.innerHTML = '';
 }
 
+function smoothScroll() {
+    const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
 
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
+};
 
 // button
 function btnIsHidden() {
@@ -126,7 +112,38 @@ function btnIsActive() {
     refs.loadMoreBtn.classList.remove('is-hidden');
 }
 
+// messages
+function messageWithTotalHits(totalHits) {
+    Notiflix.Notify.success(`Hooray! We found ${totalHits} totalHits images.`)
+}
+
+
 function endOfSearchResult() {
     
     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
 }
+
+// checking
+function checkingAmountOfPages(totalHits, timerId) {
+       {
+                let totalPages = Math.ceil(totalHits / fetchApiServise.per_page);
+                let currentPage = fetchApiServise.page-1;
+                console.log(totalPages, currentPage);
+                // let timerId = setTimeout(btnIsActive, 1000);
+                if (totalPages === currentPage) {
+                    endOfSearchResult();
+                    clearTimeout(timerId)
+                    btnIsHidden();
+                    
+                } 
+                
+            }
+}
+
+function checkingEmptyArr(hits, timerId) {
+    if (hits.length === 0) {
+        clearTimeout(timerId);
+        btnIsHidden();
+        return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    };
+};
