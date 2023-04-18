@@ -21,26 +21,35 @@ export default class FetchApiServise {
     }
 
 
-    fetchSearch() {
-        // console.log("до запиту", this);
+    async fetchSearch() {
         queryParams.page = this.page;
         queryParams.q = this.searchQuery;
 
-        return axios.get(BASE_URL, {
+        const response = await axios.get(BASE_URL, {
             params: {
                 ...queryParams,
                 key: API_KEY,
             },
-            })
-            .then(response => {
-            //          if (!response.ok) {
-            //     throw new Error(response.status);
-            // }
-                    this.incrementPage();
-                    console.log(response.data)
-                    return response.data;
-                })
-                .catch(error => {console.log(error)})
+        });
+        this.incrementPage();
+        const data = await response.data;
+        return data;
+        
+        // return axios.get(BASE_URL, {
+        //     params: {
+        //         ...queryParams,
+        //         key: API_KEY,
+        //     },
+        //     })
+        //     .then(response => {
+        //     //          if (!response.ok) {
+        //     //     throw new Error(response.status);
+        //     // }
+        //             this.incrementPage();
+        //             console.log(response.data)
+        //             return response.data;
+        //         })
+                // .catch(error => {console.log(error)})
     };
     
 

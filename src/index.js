@@ -15,7 +15,7 @@ refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick)
 
 btnIsHidden();
 
-function onSubmitSearch(e) {
+async function onSubmitSearch(e) {
     e.preventDefault();
 
     clearContainer();
@@ -25,35 +25,72 @@ function onSubmitSearch(e) {
     }
 
     fetchApiServise.resetPage();
-    fetchApiServise.fetchSearch()
-        .then(({ hits, totalHits }) => {
-            // let timerId = setTimeout(btnIsActive, 1000);
-            checkingEmptyArr(hits, timerId);
-            messageWithTotalHits(totalHits);
-            renderGAlary(hits);
-            checkingAmountOfPages(totalHits);
 
-        })
-        .then(activateSimpleLightBox);
+    // const ({ hits, totalHits })
+
+    let timerId = setTimeout(btnIsActive, 1000); 
+    try {
+        const { hits, totalHits } = await fetchApiServise.fetchSearch();
+
+        const checkedArr = checkingEmptyArr(hits, timerId);
+        const messTotalHits = messageWithTotalHits(totalHits);
+        const renderedGallery = renderGallery(hits);
+        const checkedPageAmount = checkingAmountOfPages(totalHits);
+        const simpleLightBox = activateSimpleLightBox();
+
+        const allWorks = await Promise.all([checkedArr, messTotalHits, renderedGallery, checkedPageAmount, simpleLightBox]);
         
-    let timerId = setTimeout(btnIsActive, 1000);  
+    } catch (error) {
+        console.log(error);
+    };
+    
+
+    // fetchApiServise.fetchSearch()
+    //     .then(({ hits, totalHits }) => {
+    //         // let timerId = setTimeout(btnIsActive, 1000);
+            // checkingEmptyArr(hits, timerId);
+            // messageWithTotalHits(totalHits);
+            // renderGAlary(hits);
+            // checkingAmountOfPages(totalHits);
+
+    
+    //     })
+    //     .then(activateSimpleLightBox);
+        
+    // let timerId = setTimeout(btnIsActive, 1000);  
 };
 
 
-function onLoadMoreBtnClick() {
+async function onLoadMoreBtnClick() {
+
+     try {
+        const { hits, totalHits } = await fetchApiServise.fetchSearch();
+
+        const renderedGallery = renderGallery(hits);
+        const checkedPageAmount = checkingAmountOfPages(totalHits);
+         const simpleLightBox = activateSimpleLightBox();
+         const smoothScr = smoothScroll();
+
+        const allWorks = await Promise.all([renderedGallery, checkedPageAmount, simpleLightBox, smoothScr]);
+        
+    } catch (error) {
+        console.log(error);
+    };
     
-        fetchApiServise.fetchSearch()
-            .then(({ totalHits, hits }) => {
-                renderGAlary(hits);
-                checkingAmountOfPages(totalHits);
-            })
-            .then(activateSimpleLightBox)
-            .then(smoothScroll);        
+
+        // fetchApiServise.fetchSearch()
+        //     .then(({ totalHits, hits }) => {
+        //         renderGAlary(hits);
+        //         checkingAmountOfPages(totalHits);
+        //     })
+        //     .then(activateSimpleLightBox)
+        //  .then(smoothScroll);   
+    
 };
     
 
-const renderGAlary = galary => {
-    const markUp = galary.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) =>
+const renderGallery = gallery => {
+    const markUp = gallery.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) =>
         `<div class="photo-card">
             <a href="${largeImageURL}">
             <img src="${webformatURL}" alt="${tags}" title="" loading="lazy" width="360" height="260"/>
@@ -85,7 +122,9 @@ const renderGAlary = galary => {
 }
 
 const activateSimpleLightBox = () => {
-    const galery = new SimpleLightbox('.gallery a');
+    const gallery = new SimpleLightbox('.gallery a');
+    gallery.refresh();
+
 }
 
 const clearContainer = () => {
@@ -114,7 +153,10 @@ function btnIsActive() {
 
 // messages
 function messageWithTotalHits(totalHits) {
+    if (totalHits > 0) {
     Notiflix.Notify.success(`Hooray! We found ${totalHits} totalHits images.`)
+    }
+    
 }
 
 
