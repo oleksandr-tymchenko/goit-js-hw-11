@@ -18,6 +18,7 @@ btnIsHidden();
 async function onSubmitSearch(e) {
     e.preventDefault();
 
+    
     clearContainer();
     fetchApiServise.query = e.currentTarget.elements.searchQuery.value.trim();
     if (fetchApiServise.query === '') {
@@ -28,6 +29,7 @@ async function onSubmitSearch(e) {
 
     // const ({ hits, totalHits })
 
+
     let timerId = setTimeout(btnIsActive, 1000); 
     try {
         const { hits, totalHits } = await fetchApiServise.fetchSearch();
@@ -36,14 +38,14 @@ async function onSubmitSearch(e) {
         const messTotalHits = messageWithTotalHits(totalHits);
         const renderedGallery = renderGallery(hits);
         const checkedPageAmount = checkingAmountOfPages(totalHits);
-        const simpleLightBox = activateSimpleLightBox();
+        // const simpleLightBox = activateSimpleLightBox();
 
         const allWorks = await Promise.all([checkedArr, messTotalHits, renderedGallery, checkedPageAmount, simpleLightBox]);
         
     } catch (error) {
         console.log(error);
     };
-    
+    activateSimpleLightBox();
 
     // fetchApiServise.fetchSearch()
     //     .then(({ hits, totalHits }) => {
@@ -62,13 +64,13 @@ async function onSubmitSearch(e) {
 
 
 async function onLoadMoreBtnClick() {
-
+    
      try {
         const { hits, totalHits } = await fetchApiServise.fetchSearch();
 
         const renderedGallery = renderGallery(hits);
         const checkedPageAmount = checkingAmountOfPages(totalHits);
-         const simpleLightBox = activateSimpleLightBox();
+        //  const simpleLightBox = activateSimpleLightBox();
          const smoothScr = smoothScroll();
 
         const allWorks = await Promise.all([renderedGallery, checkedPageAmount, simpleLightBox, smoothScr]);
@@ -77,7 +79,7 @@ async function onLoadMoreBtnClick() {
         console.log(error);
     };
     
-
+    activateSimpleLightBox();
         // fetchApiServise.fetchSearch()
         //     .then(({ totalHits, hits }) => {
         //         renderGAlary(hits);
