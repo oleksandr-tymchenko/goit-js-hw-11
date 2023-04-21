@@ -1,6 +1,10 @@
 const axios = require('axios').default;
 import Notiflix from 'notiflix';
 
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+
+
 const API_KEY = '34527862-993120beb94eb9a2ced5c8bcb';
 const BASE_URL = 'https://pixabay.com/api/';
 const queryParams = {
@@ -31,7 +35,9 @@ export default class FetchApiServise {
                 key: API_KEY,
             },
         });
+        
         this.incrementPage();
+       
         const data = await response.data;
         return data;
         

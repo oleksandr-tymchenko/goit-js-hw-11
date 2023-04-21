@@ -33,10 +33,7 @@ async function onSubmitSearch(e) {
 
     fetchApiServise.resetPage();
 
-    // const ({ hits, totalHits })
-
-
-    // let timerId = setTimeout(btnIsActive, 2000); 
+  
     try {
         const { hits, totalHits } = await fetchApiServise.fetchSearch();
 //   let timerId = setTimeout(btnIsActive, 2000); 
@@ -53,19 +50,7 @@ async function onSubmitSearch(e) {
     };
     activateSimpleLightBox();
 
-    // fetchApiServise.fetchSearch()
-    //     .then(({ hits, totalHits }) => {
-    //         // let timerId = setTimeout(btnIsActive, 1000);
-            // checkingEmptyArr(hits, timerId);
-            // messageWithTotalHits(totalHits);
-            // renderGAlary(hits);
-            // checkingAmountOfPages(totalHits);
-
-    
-    //     })
-    //     .then(activateSimpleLightBox);
-        
-    // let timerId = setTimeout(btnIsActive, 1000);  
+ 
 };
 
 
@@ -85,14 +70,7 @@ async function onLoadMoreBtnClick() {
         console.log(error.message);
     };
     
-    activateSimpleLightBox();
-        // fetchApiServise.fetchSearch()
-        //     .then(({ totalHits, hits }) => {
-        //         renderGAlary(hits);
-        //         checkingAmountOfPages(totalHits);
-        //     })
-        //     .then(activateSimpleLightBox)
-        //  .then(smoothScroll);   
+    activateSimpleLightBox();  
     
 };
     
@@ -135,11 +113,11 @@ const clearContainer = () => {
 refs.gallery.innerHTML = '';
 }
 
-function activateSimpleLightBox () {
-    const gallery = new SimpleLightbox('.gallery a');
-    gallery.refresh();
+// function activateSimpleLightBox () {
+//     const gallery = new SimpleLightbox('.gallery a');
+//     gallery.refresh();
 
-}
+// }
 
 function smoothScroll() {
     const { height: cardHeight } = document
