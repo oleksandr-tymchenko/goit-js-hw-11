@@ -8,6 +8,10 @@ import FetchApiServise from './api-servises';
 // import { galleryTemplate } from './templates';
 // import galleryTpl from './templates/gallery.hbs';
 
+// import { template } from './templates/gallery-tpl';
+
+// console.log(template({ name: 'Nils' }));
+
 const fetchApiServise = new FetchApiServise();
 const refs = getRefs();
 
