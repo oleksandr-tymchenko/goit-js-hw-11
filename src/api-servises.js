@@ -1,8 +1,6 @@
 const axios = require('axios').default;
 import Notiflix from 'notiflix';
 
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
 
 
 const API_KEY = '34527862-993120beb94eb9a2ced5c8bcb';

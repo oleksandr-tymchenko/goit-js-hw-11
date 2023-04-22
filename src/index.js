@@ -113,11 +113,11 @@ const clearContainer = () => {
 refs.gallery.innerHTML = '';
 }
 
-// function activateSimpleLightBox () {
-//     const gallery = new SimpleLightbox('.gallery a');
-//     gallery.refresh();
+function activateSimpleLightBox () {
+    const gallery = new SimpleLightbox('.gallery a');
+    gallery.refresh();
 
-// }
+}
 
 function smoothScroll() {
     const { height: cardHeight } = document
